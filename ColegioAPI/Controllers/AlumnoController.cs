@@ -20,12 +20,32 @@ namespace ColegioAPI.Controllers
             _context = context;
         }
 
+        // GET: api/AlumnoFullName
+        [HttpGet("/getFUllName")]
+        public ActionResult<IEnumerable<AlumnoFullName>> GetAlumnosFullName()
+        {
+
+            var alumnoFullName = (from b in _context.Alumnos
+                        select new AlumnoFullName()
+                        {
+                            IdAlumno = b.IdAlumno,
+                            FullName = (b.Nombre + " " + b.Apellido),
+                            FechaNacimiento = b.FechaNacimiento,
+                            Genero = b.Genero
+                        }).ToList();
+
+            return alumnoFullName;
+
+        }
+
         // GET: api/Alumno
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Alumno>>> GetAlumnos()
         {
             return await _context.Alumnos.ToListAsync();
         }
+
+       
 
         // GET: api/Alumno/5
         [HttpGet("{id}")]
@@ -114,5 +134,13 @@ namespace ColegioAPI.Controllers
         {
             return _context.Alumnos.Any(e => e.IdAlumno == id);
         }
+    }
+
+    public class AlumnoFullName
+    {
+        public int IdAlumno { get; set; }
+        public string? FullName { get; set; }
+        public DateOnly FechaNacimiento { get; set; }
+        public string? Genero { get; set; }
     }
 }
